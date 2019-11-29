@@ -1,0 +1,16 @@
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+server-->browser: HTML-code
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+server-->browser: css-code
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+server-->browser: js-code
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+server-->browser: JSON-data 
+
+The notes page is displayed with styling and js functionality downloaded. 
+
+browser->server: HTTP POST  https://fullstack-exampleapp.herokuapp.com/new_note
+server--> browser: redirects url response to https://fullstack-exampleapp.herokuapp.com/notes happens and the new note is displayed
+(the server instructs the browser to reload the Notes page with a redirect).
+
+

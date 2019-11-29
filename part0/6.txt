@@ -1,0 +1,2 @@
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/new_note_spa
+server-->browser: JS-code 
