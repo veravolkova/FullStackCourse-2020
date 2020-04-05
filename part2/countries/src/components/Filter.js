@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 export default function Filter(props) {
   return (
@@ -6,5 +6,5 @@ export default function Filter(props) {
       find countries:
       <input value={props.value} onChange={props.onChange} />
     </div>
-  );
+  )
 }
