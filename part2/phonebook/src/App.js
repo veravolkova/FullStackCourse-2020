@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonList from './components/PersonList'
 import PersonForm from './components/PersonForm'
+import Notification from './components/Notification'
 import entriesService from './services/entries'
 
 const App = () => {
@@ -9,13 +10,15 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
-  const [searchResults, setSearchResults] = React.useState([])
+  const [searchResults, setSearchResults] = useState([])
+  const [message, setMessage] = useState('')
+  const [messageType, setMessageType] = useState('')
 
   useEffect(() => {
     const results = persons.filter(person =>
       person.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    setSearchResults(results)    
+    setSearchResults(results)
   }, [persons, searchTerm])
 
   useEffect(() => {
@@ -40,9 +43,22 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        setMessage(
+          `${personObject.name} has been added to the contact list.`
+        )
+        setMessageType('success')
+        setTimeout(() => {
+          setMessage(null)
+        }, 2000)
       })
         .catch(error => {
-          console.log('Error creating a new entry')
+          setMessageType('error')
+          setMessage(
+            `Contact '${personObject.name}' can't be added`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 2000)
         })
     }
 
@@ -53,9 +69,49 @@ const App = () => {
           setPersons(
             persons.map(p => (p.id !== entry.id ? p : returnedPerson))
           )
+          setMessage(
+            `Contact for ${entry.name} has been updated.`
+          )
+          setMessageType('success')
+          setTimeout(() => {
+            setMessage(null)
+          }, 2000)
         })
         .catch(error => {
-          console.log('Error updating the entry')
+          setMessageType('error')
+          setMessage(
+            `Contact '${entry.name}' was already removed from server`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 2000)
+        })
+    }
+  }
+
+  const handleDelete = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      entriesService
+        .remove(id, name)
+        .then(res => {
+          const filteredPersons = persons.filter(p => p.id !== id)
+          setPersons(filteredPersons)
+          setMessage(
+            `${name} has been removed from the contact list.`
+          )
+          setMessageType('success')
+          setTimeout(() => {
+            setMessage(null)
+          }, 2000)
+        })
+        .catch(error => {
+          setMessageType('error')
+          setMessage(
+            `Contact '${name}' can't be removed from server`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 2000)
         })
     }
   }
@@ -72,21 +128,7 @@ const App = () => {
   const handleNumberChange = event => {
     console.log(event.target.value)
     setNewNumber(event.target.value)
-  }
-
-  const handleDelete = (id, name) => {
-    if (window.confirm(`Delete ${name}?`)) {
-      entriesService
-        .remove(id, name)
-        .then(res => {
-          const filteredPersons = persons.filter(p => p.id !== id)
-          setPersons(filteredPersons)
-        })
-        .catch(err => {
-          console.log('Error deleting the entry')
-        })
-    }
-  }
+  }  
 
   const personsToShow = searchTerm ? searchResults : persons
 
@@ -104,6 +146,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
+      <Notification message={message} type={messageType} />
       <PersonList persons={personsToShow} handleDelete={handleDelete} />
     </div>
   )
