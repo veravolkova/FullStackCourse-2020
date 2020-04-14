@@ -5,7 +5,7 @@ module.exports = {
   },
   extends: [
     'plugin:react/recommended',
-    'airbnb',
+    //'airbnb',
   ],
   globals: {
     Atomics: 'readonly',
@@ -15,13 +15,37 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 2019,
+    ecmaVersion: 2018,
     sourceType: 'module',
   },
   plugins: [
     'react',
-  ],
+  ], 
   rules: {
-    semi: 'never',
+    'indent': [
+        'warn',
+        2
+    ],    
+    'quotes': [
+        'warn',
+        'single'
+    ],
+    'semi': [
+        'warn',
+        'never'
+    ],
+    'eqeqeq': 'warn',
+    'no-trailing-spaces': 'warn',
+    'no-undef': 'off',
+    'no-unused-vars': 'off',
+    'no-console': 0,
+    "linebreak-style": 0, 
+    "react/prop-types": 0,
+    'object-curly-spacing': [
+    'warn', 'always'
+    ],
+    'arrow-spacing': [
+    'warn', { 'before': true, 'after': true }
+    ],      
   },
 };

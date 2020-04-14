@@ -54,7 +54,8 @@ const App = () => {
         .catch(error => {
           setMessageType('error')
           setMessage(
-            `Contact '${personObject.name}' can't be added`
+            // `Contact '${personObject.name}' can't be added`
+            error.response.data.error
           )
           setTimeout(() => {
             setMessage(null)
@@ -80,7 +81,7 @@ const App = () => {
         .catch(error => {
           setMessageType('error')
           setMessage(
-            `Contact '${entry.name}' was already removed from server`
+            `Update for contact '${entry.name}' has not succeeded`
           )
           setTimeout(() => {
             setMessage(null)
@@ -128,7 +129,7 @@ const App = () => {
   const handleNumberChange = event => {
     console.log(event.target.value)
     setNewNumber(event.target.value)
-  }  
+  }
 
   const personsToShow = searchTerm ? searchResults : persons
 
