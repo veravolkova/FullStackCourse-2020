@@ -21,6 +21,8 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology
   })
 
 mongoose.set('useCreateIndex', true)
+mongoose.set('useNewUrlParser', true)
+mongoose.set('useFindAndModify', false)
 
 app.use(cors())
 app.use(express.static('build'))
