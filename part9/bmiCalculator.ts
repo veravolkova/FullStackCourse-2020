@@ -1,5 +1,3 @@
-export {};
-
 interface BmiValues {
     value1: number;
     value2: number;
@@ -33,12 +31,17 @@ const calculateBmi = (a: number, b: number): string => {
     if (bmi > 25) {
         return 'Overweight';
     }
+    else return 'Unknown value';
 }
+
 
 try {
     const { value1, value2 } = parseArguments(process.argv);
     console.log(calculateBmi(value1, value2));
+
 } catch (e) {
     console.log('Error, something bad happened, message: ', e.message);
 }
 
+
+export { calculateBmi };
