@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+ {    
+    "ssn": "010190-230M",
+    "name": "Justin Biber",
+    "dateOfBirth": "1990-01-01",
+    "gender": "male",
+    "occupation": "show business"
+}

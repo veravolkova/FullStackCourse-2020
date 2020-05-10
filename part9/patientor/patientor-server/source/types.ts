@@ -1,4 +1,7 @@
-//export type State = 'light' | 'moderate' | 'severe' ;
+export enum Gender {
+  Male = 'male',
+  Female = 'female', 
+}
 
 export interface DiagnoseEntry {
     id: number;
@@ -13,8 +16,9 @@ export interface PatientEntry {
     ssn: string;
     name: string; 
     dateOfBirth: string;
-    gender: string;
+    gender: Gender;
     occupation: string;
   } 
 
 export type NonSensitivePatientEntry = Omit<PatientEntry, 'ssn'>;
+export type NewPatientEntry = Omit<PatientEntry, 'id'>;
