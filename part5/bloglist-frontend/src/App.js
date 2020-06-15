@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import Footer from './components/Footer'
@@ -14,6 +15,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const blogFormRef = React.createRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -31,7 +33,8 @@ const App = () => {
   }, [])
 
   const addBlogEntry = (blogObject) => {
-    try{
+    try {
+      blogFormRef.current.toggleVisibility()
       blogService
         .create(blogObject)
         .then(returnedBlog => {
@@ -92,42 +95,24 @@ const App = () => {
     }
   }
 
-
   const loginForm = () => (
-    <div>
-      <h4>Login</h4>
-      <form onSubmit={handleLogin}>
-        <div>
-        username
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-        password
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </div>
-  )
-
-  const blogForm = () => (
-    <Togglable buttonLabel="new blog">
-      <BlogForm
-        createBlogEntry={addBlogEntry}
+    <Togglable buttonLabel='login'>
+      <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
+        handleSubmit={handleLogin}
       />
     </Togglable>
   )
 
+
+  const blogForm = () => (
+    <Togglable buttonLabel='new blog entry' ref={blogFormRef}>
+      <BlogForm createBlogEntry={addBlogEntry} />
+    </Togglable>
+  )
 
   return (
     <div>
