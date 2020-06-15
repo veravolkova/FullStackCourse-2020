@@ -1,25 +1,42 @@
-import React from 'react'
+import React from "react";
+import Part from "./Part";
+import { CoursePart } from "../types";
 
 interface ContentProps {
-    parts: {
-        name: string;
-        exerciseCount: number;
-    }[];
+  parts: {
+    name: string;
+    exerciseCount?: number;
+    exerciseSubmissionLink?: string;
+    description?: string;
+    groupProjectCount?: number;
+  }[];
 }
 
-const Content: React.FC<ContentProps> = (props) => {
+const Content: React.FC< {parts: CoursePart []} > = (props) => { 
+  //const Content: React.FC< courseParts []: CoursePart > = (props) => { 
 
-    const partsList = props.parts.map((part, index) => (
-        <li key={index} style={{ listStyleType: 'none' }}>
-            {part.name}, {part.exerciseCount}
-        </li>
-    ));
+  const cont = props.parts.map((item, index) => (
+    <p key={index}>
+      <Part part={item} />
+    </p>
+  ));
 
-    return (
-        <div>
-            {partsList}
-        </div>
-    );
-}
-export default Content
+ /*  const partsList = props.parts.map((part, index) => (
+    <li key={index} style={{ listStyleType: "none" }}>
+      {part.name}, {part.exerciseCount}
+    </li>
+  )); 
+ */
+  return (
+    <div>
+      {cont}
+    </div>
+  );
+};
+export default Content;
 
+
+
+
+ 
+ 
