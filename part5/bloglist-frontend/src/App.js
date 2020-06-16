@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import Footer from './components/Footer'
+import Button from './components/Button'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -107,7 +108,6 @@ const App = () => {
     </Togglable>
   )
 
-
   const blogForm = () => (
     <Togglable buttonLabel='new blog entry' ref={blogFormRef}>
       <BlogForm createBlogEntry={addBlogEntry} />
@@ -123,11 +123,15 @@ const App = () => {
         <>
           <h4>Blogs</h4>
           <p>{user.name} logged in</p>
-          <button onClick={handleLogout}>logout</button>
+          <Button handleClick={handleLogout} text='logout' />
           {blogForm()}
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-          )}
+          <ul>
+            {blogs.map((blog, index) =>
+              <li key={index}>
+                <Blog blog={blog}/>
+              </li>
+            )}
+          </ul>
         </>
       }
 
