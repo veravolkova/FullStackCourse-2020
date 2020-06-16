@@ -1,10 +1,20 @@
 import React, { useState } from 'react'
 import Button from './Button'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLikesIncr, handleRemove }) => {
 
   const [blogVisible, setBlogVisible] = useState(false)
   const [buttonText, setButtonText] = useState('view')
+
+  const handleLikes = (event) => {
+    event.preventDefault()
+    handleLikesIncr(blog)
+  }
+
+  const handleDelete = (event) => {
+    event.preventDefault()
+    handleRemove(blog)
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -38,7 +48,9 @@ const Blog = ({ blog }) => {
   return (
     <div style={blogStyle} >
       { blogVisible ? blogMax : blogMin }
-      <Button handleClick={handleButtonClick} text={buttonText} />
+      <Button handleClick={handleButtonClick} text={buttonText} /><br/>
+      <Button handleClick={handleLikes} text='like' /><br/>
+      <Button handleClick={handleDelete} text='remove' />
     </div>
   )}
 
