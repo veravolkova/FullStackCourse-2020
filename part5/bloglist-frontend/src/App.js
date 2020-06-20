@@ -93,7 +93,7 @@ const App = () => {
     if (window.confirm(`Delete ${blogObject.title}?`)) {
       blogService
         .remove(blogObject.id)
-        .then(res => {
+        .then(() => {
           const filteredBlogs = blogs.filter(b => b.id !== blogObject.id)
           setBlogs(filteredBlogs)
           setMessage(
@@ -104,7 +104,7 @@ const App = () => {
             setMessage(null)
           }, 5000)
         })
-        .catch(error => {
+        .catch(() => {
           setMessageType('error')
           setMessage(
             `Entry '${blogObject.title}' can't be removed from server. Unauthorized`

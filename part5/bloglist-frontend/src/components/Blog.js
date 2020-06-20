@@ -40,15 +40,23 @@ const Blog = ({ blog, handleLikesIncr, handleRemove }) => {
     </>
   )
 
-  const handleButtonClick = () => {
+  const handleVisible = () => {
     setBlogVisible(!blogVisible)
     !blogVisible ? setButtonText('hide') : setButtonText('view')
   }
 
   return (
-    <div style={blogStyle} >
-      { blogVisible ? blogMax : blogMin }
-      <Button handleClick={handleButtonClick} text={buttonText} /><br/>
+    <div style={blogStyle} className='blog'>
+      { blogVisible ?
+        <div className="maxDetails">
+          {blogMax}
+        </div>
+        :
+        <div className="minDetails">
+          {blogMin}
+        </div>
+      }
+      <Button handleClick={handleVisible} text={buttonText} /><br/>
       <Button handleClick={handleLikes} text='like' /><br/>
       <Button handleClick={handleDelete} text='remove' />
     </div>
