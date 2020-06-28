@@ -185,19 +185,20 @@ const App = () => {
           <p>{user.name} logged in</p>
           <Button handleClick={handleLogout} text='logout' />
           {blogForm()}
-          <ul>
-            {blogs
-              .sort((a, b) => a.likes < b.likes ? 1 : -1)
-              .map((blog, index) => (
-                <li key={index}>
-                  <Blog blog={blog} handleLikesIncr={handleLikesIncr} handleRemove={handleRemove}/>
-                </li>
-              )
-              )}
-          </ul>
+          <div id='main'>
+            <ul>
+              {blogs
+                .sort((a, b) => a.likes < b.likes ? 1 : -1)
+                .map((blog, index) => (
+                  <li key={index}>
+                    <Blog blog={blog} handleLikesIncr={handleLikesIncr} handleRemove={handleRemove}/>
+                  </li>
+                )
+                )}
+            </ul>
+          </div>
         </>
       }
-
       <Footer />
     </div>
   )

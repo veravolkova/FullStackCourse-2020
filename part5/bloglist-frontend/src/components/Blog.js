@@ -46,7 +46,7 @@ const Blog = ({ blog, handleLikesIncr, handleRemove }) => {
   }
 
   return (
-    <div style={blogStyle} className='blog'>
+    <div style={blogStyle} id='blog'>
       { blogVisible ?
         <div className="maxDetails">
           {blogMax}

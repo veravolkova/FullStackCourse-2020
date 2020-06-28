@@ -45,3 +45,4 @@ describe('<Togglable />', () => {
     expect(div).toHaveStyle('display: none')
   })
 })
+
