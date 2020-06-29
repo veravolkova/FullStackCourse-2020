@@ -4,7 +4,7 @@ describe('Blog app', function() {
     const user = {
       name: 'Vera Volkova',
       username: 'veravolkova',
-      password: 'S'
+      password: 'Salainen'
     }
     cy.request('POST', 'http://localhost:3001/api/users/', user)
     cy.visit('http://localhost:3000')
@@ -22,7 +22,7 @@ describe('Blog app', function() {
   it('user can log in', function() {
     cy.contains('login').click()
     cy.get('#username').type('veravolkova')
-    cy.get('#password').type('S')
+    cy.get('#password').type('Salainen')
     cy.get('#login-button').click()
 
     cy.contains('Vera Volkova logged in')
@@ -45,7 +45,7 @@ describe('Blog app', function() {
 
 describe('when logged in', function() {
   beforeEach(function() {
-    cy.login({ username: 'veravolkova', password: 'S' })
+    cy.login({ username: 'veravolkova', password: 'Salainen' })
   })
 
   it('a new blog entry can be created', function() {
@@ -65,7 +65,7 @@ describe('when logged in', function() {
 
 describe('when blog is created', function() {
   beforeEach(function() {
-    cy.login({ username: 'veravolkova', password: 'S' })
+    cy.login({ username: 'veravolkova', password: 'Salainen' })
     cy.createBlog({ title:'an entry created by cypress1', author: 'Cypress', url: 'https://www.cypress.io/' })
   })
 
@@ -83,13 +83,13 @@ describe('when blog is created', function() {
     const user = {
       name: 'Vera Popova',
       username: 'verapopova',
-      password: 'S'
+      password: 'Salainen'
     }
     cy.request('POST', 'http://localhost:3001/api/users/', user)
     cy.visit('http://localhost:3000')
 
     //new user login
-    cy.login({ username: 'verapopova', password: 'S' })
+    cy.login({ username: 'verapopova', password: 'Salainen' })
     cy.contains('remove').click()
     cy.get('.error')
       .should('contain', 'Unauthorized')
@@ -104,6 +104,7 @@ describe('when blog is created', function() {
     cy.get('ul>li').then(function($lis){
       expect($lis).to.have.length(3)
       expect($lis.eq(0)).to.contain('an entry created by cypress2')
+      console.log($lis.eq(0))
       expect($lis.eq(1)).to.contain('an entry created by cypress3')
       expect($lis.eq(2)).to.contain('an entry created by cypress1')
     })
