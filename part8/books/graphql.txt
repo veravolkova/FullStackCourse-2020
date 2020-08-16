@@ -1,0 +1,86 @@
+query {
+  bookCount
+  authorCount
+}
+
+
+query {
+  allBooks { 
+    title 
+    author {name}
+    published 
+    genres
+  }
+}
+
+
+query {
+  allBooks(author: "Robert Martin") {
+    title
+  }
+}
+
+
+query {
+  allBooks(genre: "refactoring") {
+    title
+    author {name}
+  }
+}
+
+query {
+  allAuthors {
+    name
+    born
+    bookCount
+  }
+}
+
+mutation {
+  editAuthor(name: "Robert Martin", setBornTo: 1958) {
+    name
+    born
+  }
+}
+
+query {
+  allBooks(author: "Robert Martin") {
+    title
+  }
+}
+
+query {
+  allBooks(genre: "refactoring") {
+    title
+    author {name}
+  }
+}
+
+
+mutation {
+  addBook(
+    title: "The idiot",
+    author: "Fyodor Dostoevsky",
+    published: 1997,
+    genres: ["novel"]
+  ) {
+    title,
+    author {name}
+  }
+}
+
+
+query {
+  allBooks(author: "Robert Martin", genre: "refactoring") {
+    title
+    author {name}
+  }
+}
+
+ mutation {
+    login(username:"veravolkova", password:"...") { value }      
+  }
+
+{
+  "Authorization": "bearer  eyJh..."
+}

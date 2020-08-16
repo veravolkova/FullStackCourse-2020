@@ -1,13 +1,23 @@
 import React from 'react'
+import { Typography } from '@material-ui/core'
+import { useQuery } from '@apollo/client'
+import { ALL_AUTHORS }  from '../queries'
 
-const Authors = (props) => {
+const Authors = ( props ) => {
+
+  const authors = useQuery(ALL_AUTHORS)
+
+  if (authors.loading  )  {
+    return <div>loading...</div>
+  }
 
   if (!props.show) {
     return null
   }
+
   return (
     <div>
-      <h2>authors</h2>
+      <Typography variant='h5'>Authors</Typography>
       <table>
         <tbody>
           <tr>
@@ -19,7 +29,7 @@ const Authors = (props) => {
                 books
             </th>
           </tr>
-          {props.authors.map(a =>
+          {authors.data.allAuthors.map(a =>
             <tr key={a.name}>
               <td>{a.name}</td>
               <td>{a.born}</td>

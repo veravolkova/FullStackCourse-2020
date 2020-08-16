@@ -1,12 +1,16 @@
-
 import React, { useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { useQuery, useApolloClient, useSubscription, useLazyQuery } from '@apollo/client'
 import Authors from './components/Authors'
 import AuthorForm from './components/AuthorForm'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
+import LoginForm from './components/LoginForm'
+import Reccomend from './components/Reccomend'
 
-import { ALL_BOOKS, ALL_AUTHORS }  from './queries'
+
+import { Button } from '@material-ui/core'
+
+import { ALL_AUTHORS, BOOK_ADDED, ALL_BOOKS, ME }  from './queries'
 
 const Notify = ({ errorMessage }) => {
   if ( !errorMessage ) {
@@ -23,11 +27,38 @@ const Notify = ({ errorMessage }) => {
 const App = () => {
   const [page, setPage] = useState('authors')
   const [errorMessage, setErrorMessage] = useState(null)
-  const authors= useQuery(ALL_AUTHORS)
-  const books = useQuery(ALL_BOOKS)
+  const [token, setToken] = useState(null)
+  const client = useApolloClient()
 
-  if (authors.loading || books.loading )  {
+  const authors= useQuery(ALL_AUTHORS)
+  const me = useQuery(ME)
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) =>
+      set.map(p => p.id).includes(object.id)
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks : dataInStore.allBooks.concat(addedBook) }
+      })
+    }
+  }
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      window.alert(`${subscriptionData.data.bookAdded.title} added`)
+    }
+  })
+
+  if (authors.loading  )  {
     return <div>loading...</div>
+  }
+
+  const logout = () => {
+    setToken(null)
+    localStorage.clear()
+    client.resetStore()
   }
 
   const notify = (message) => {
@@ -40,29 +71,59 @@ const App = () => {
   return (
     <div>
       <div>
-        <button onClick={() => setPage('authors')}>authors</button>
-        <button onClick={() => setPage('books')}>books</button>
-        <button onClick={() => setPage('add')}>add book</button>
+        <Button onClick={() => setPage('authors')}>authors</Button>
+        <Button onClick={() => setPage('books')}>books</Button>
+
+        {!token && (
+          <Button onClick={() => setPage('login')}>login</Button>
+        )}
+        {token && (
+          <>
+            <Button onClick={() => setPage('reccomend')}>reccomend</Button>
+            <Button onClick={() => setPage('add')}>add book</Button>
+            <Button onClick={() => setPage('edit')}>edit author</Button>
+          </>
+        )}
+        <Button onClick={logout}>logout</Button>
       </div>
 
       <Notify errorMessage={errorMessage} />
 
-
-      <Authors authors={authors.data.allAuthors}
+      <Authors
         show={page === 'authors'}
       />
 
-      {/* props setError */}
-      <AuthorForm authors={authors.data.allAuthors} notify={notify}
-        show={page === 'authors'}
+      <AuthorForm
+        notify={notify}
+        show={page === 'edit'}
+        setErrorMessage={notify}
+        setPage={setPage}
+        authors={authors.data.allAuthors}
       />
 
-      <Books books={books.data.allBooks}
-        show={page === 'books'}
-      />
-      {/* props setError */}
-      <NewBook setError={notify}
+      <Books show={page === 'books'}/>
+
+      <NewBook
+        setError={notify}
         show={page === 'add'}
+        setErrorMessage={notify}
+        setPage={setPage}
+        updateCacheWith = {updateCacheWith }
+      />
+
+      <Reccomend
+        setError={notify}
+        show={page === 'reccomend'}
+        setErrorMessage={notify}
+        setPage={setPage}
+        me={me}
+      />
+
+      <LoginForm
+        setToken={setToken}
+        setErrorMessage={notify}
+        setPage={setPage}
+        show={page === 'login'}
       />
 
     </div>

@@ -51,12 +51,6 @@ const AuthorForm = ({ show, notify, authors }) => {
       <h2>change number</h2>
 
       <form onSubmit={submit}>
-        {/*   <div>
-          name <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
-        </div> */}
         <Select
           value={selectedOption}
           onChange={handleChange}
