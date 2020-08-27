@@ -36,12 +36,9 @@ const Books = (props) => {
     setBooksByGenre(books.data.allBooks.map(book => book))
   }
 
-
-
   if (!props.show) {
     return null
   }
-
 
   return (
     <div>

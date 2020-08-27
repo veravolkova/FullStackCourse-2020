@@ -3,6 +3,11 @@ import Select from 'react-select'
 import { useMutation } from '@apollo/client'
 import { EDIT_AUTHOR, ALL_AUTHORS } from '../queries'
 
+import {
+  Button,
+  Typography,
+} from '@material-ui/core'
+
 const AuthorForm = ({ show, notify, authors }) => {
 
   const [name, setName] = useState('')
@@ -20,7 +25,7 @@ const AuthorForm = ({ show, notify, authors }) => {
     setName(selectedOption.value)
   }
 
-  const [ changeYear, result ] = useMutation(EDIT_AUTHOR, {
+  const [changeYear, result] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
     /* onError: (error) => {
       props.setError(error.graphQLErrors[0].message)
@@ -28,7 +33,7 @@ const AuthorForm = ({ show, notify, authors }) => {
   })
 
   useEffect(() => {
-    if ( result.data && !result.data.editAuthor) {
+    if (result.data && !result.data.editAuthor) {
       notify('name not found')
     }
   }, [result.data]) // eslint-disable-line
@@ -48,21 +53,21 @@ const AuthorForm = ({ show, notify, authors }) => {
 
   return (
     <div>
-      <h2>change number</h2>
+      <Typography variant='h5'>Change number</Typography>
 
-      <form onSubmit={submit}>
+      <form onSubmit={submit} style={{ width: 600 }}>
         <Select
           value={selectedOption}
           onChange={handleChange}
           options={options}
         />
-        <div>
+        <div style={{ width: 600, marginTop: 10 }}>
           year <input
             value={year}
             onChange={({ target }) => setYear(parseInt(target.value))}
           />
         </div>
-        <button type='submit'>change year</button>
+        <Button type='submit'>change year</Button>
       </form>
     </div>
   )

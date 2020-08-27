@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useQuery, useApolloClient, useSubscription, useLazyQuery } from '@apollo/client'
+import React, { useState, useEffect } from 'react'
+import { useQuery, useApolloClient, useSubscription } from '@apollo/client'
 import Authors from './components/Authors'
 import AuthorForm from './components/AuthorForm'
 import Books from './components/Books'
@@ -51,12 +51,21 @@ const App = () => {
     }
   })
 
-  if (authors.loading  )  {
+  useEffect(() => {
+    const tokenCached = localStorage.getItem('library-user-token')
+    if (tokenCached) {
+      setToken(tokenCached)
+    }
+  }, [])
+
+
+  if (authors.loading || me.loading)  {
     return <div>loading...</div>
   }
 
   const logout = () => {
     setToken(null)
+    setPage('authors')
     localStorage.clear()
     client.resetStore()
   }
@@ -101,14 +110,14 @@ const App = () => {
         authors={authors.data.allAuthors}
       />
 
-      <Books show={page === 'books'}/>
+      <Books show={page === 'books'} />
 
       <NewBook
         setError={notify}
         show={page === 'add'}
         setErrorMessage={notify}
         setPage={setPage}
-        updateCacheWith = {updateCacheWith }
+        updateCacheWith = {updateCacheWith}
       />
 
       <Reccomend
@@ -117,6 +126,7 @@ const App = () => {
         setErrorMessage={notify}
         setPage={setPage}
         me={me}
+        token={token}
       />
 
       <LoginForm

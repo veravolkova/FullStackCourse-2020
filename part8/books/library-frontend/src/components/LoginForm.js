@@ -11,18 +11,18 @@ const LoginForm = ({ setErrorMessage, setToken, show, setPage }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const [ login, result ] = useMutation(LOGIN, {
+
+  const [login, result] = useMutation(LOGIN, {
     onCompleted: () => {
       setPage('authors')
     },
     onError: (error) => {
-      console.log(error.graphQLErrors[0].message)
-      setErrorMessage(error.graphQLErrors[0].message)
+      setErrorMessage(error.message)
     }
   })
 
   useEffect(() => {
-    if ( result.data ) {
+    if (result.data) {
       const token = result.data.login.value
       setToken(token)
       localStorage.setItem('library-user-token', token)
@@ -54,7 +54,7 @@ const LoginForm = ({ setErrorMessage, setToken, show, setPage }) => {
           <TextField
             label='password'
             id='password'
-            type="password"
+            type='password'
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />

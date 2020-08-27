@@ -1,18 +1,25 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Typography } from '@material-ui/core'
 import { useQuery } from '@apollo/client'
-import { ALL_BOOKS }  from '../queries'
+import { ALL_BOOKS } from '../queries'
 
 const Reccomend = (props) => {
 
+  const [genre, setGenre] = useState(null)
   const me = props.me
-  const favoriteGenre = me.data.me.favoriteGenre
 
-  const books = useQuery(ALL_BOOKS, {
-    variables: { genre: favoriteGenre },
-  })
+  const books =
+    useQuery(ALL_BOOKS, {
+      variables: { genre: genre },
+    })
 
-  if (books.loading || me.loading )  {
+  useEffect(() => {
+    if (books.data && me.data && props.token) {
+      setGenre(me.data.me.favoriteGenre)
+    }
+  }, [books.data, me])
+
+  if (books.loading || me.loading) {
     return <div>loading...</div>
   }
 
@@ -43,7 +50,6 @@ const Reccomend = (props) => {
               </tr>
             )
           }
-
         </tbody>
       </table>
 
