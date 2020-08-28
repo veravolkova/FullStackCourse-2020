@@ -25,12 +25,18 @@ const App: React.FC = () => {
       exerciseCount: 14,
       description: "Confusing description",
       exerciseSubmissionLink: "https://fake-exercise-submit.made-up-url.dev"
+    },
+    {
+      name: "Fourth part",
+      exerciseCount: 6,
+      description: "Some description"      
     }
   ];
 
+
   return (
-    <div>
-      <Header name={courseName} />
+    <div>      
+      <Header name={courseName} />     
       <Content parts={courseParts} />
       <Total parts={courseParts} />
     </div>
