@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Gender, NewPatientEntry } from './types'; 
+import { Entry, Gender, NewPatientEntry } from './types'; 
 
 
 //type guards
@@ -56,6 +56,12 @@ const parseOccupation = (occupation: any): string => {
     return occupation;  
   };
 
+/* const parseEntries = (param: any): param is Entry => {
+    return Object.values(Entry).includes(param);
+  }; 
+    
+    return occupation;  
+}; */
 
 const toNewPatientEntry = (object: any): NewPatientEntry => {  
     return {
@@ -63,7 +69,9 @@ const toNewPatientEntry = (object: any): NewPatientEntry => {
         name: parseName(object.name),
         dateOfBirth: parseDate(object.dateOfBirth),
         gender: parseGender(object.gender),
-        occupation: parseOccupation(object.occupation)
+        occupation: parseOccupation(object.occupation),
+        //to do
+        entries: object.entries
     };
   };
 

@@ -8,18 +8,22 @@ import { useStateValue } from "./state";
 import { Patient } from "./types";
 
 import PatientListPage from "./PatientListPage";
+import PatientDetailsPage from "./PatientDetailsPage";
+
+import { setPatientList} from "./state/reducer";
 
 const App: React.FC = () => {
   const [, dispatch] = useStateValue();
   React.useEffect(() => {
-    axios.get<void>(`${apiBaseUrl}/ping`);
+    // axios.get<void>(`${apiBaseUrl}/ping`);
 
     const fetchPatientList = async () => {
       try {
         const { data: patientListFromApi } = await axios.get<Patient[]>(
           `${apiBaseUrl}/patients`
         );
-        dispatch({ type: "SET_PATIENT_LIST", payload: patientListFromApi });
+        // dispatch({ type: "SET_PATIENT_LIST", payload: patientListFromApi });
+        dispatch(setPatientList(patientListFromApi));
       } catch (e) {
         console.error(e);
       }
@@ -28,16 +32,27 @@ const App: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <div className="App">
+    <div>
       <Router>
         <Container>
           <Header as="h1">Patientor</Header>
-          <Button as={Link} to="/" primary>
+          <Button as={Link} to="/" primary>          
             Home
           </Button>
+      {/*     <Button as={Link} to="/patients/:id" primary>          
+            Details
+          </Button> */}
           <Divider hidden />
-          <Switch>
-            <Route path="/" render={() => <PatientListPage />} />
+          <Switch>        
+            <Route path="/" exact>
+              <PatientListPage />
+            </Route>
+            <Route path="/patients/:id">
+              <PatientDetailsPage />
+            </Route>
+         
+ {/*         <Route path="/" render={() => <PatientListPage />} />             
+            <Route path="/patients/:id"><PatientDetailsPage /></Route>   */}  
           </Switch>
         </Container>
       </Router>

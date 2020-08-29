@@ -1,12 +1,12 @@
 import patientEntries from '../../data/patients';
-import { NonSensitivePatientEntry, PatientEntry, NewPatientEntry } from '../types';
+import { PatientNonSensitive, Patient, NewPatientEntry } from '../types';
 
 
-const getEntries = (): Array<PatientEntry> => {    
+const getEntries = (): Array<Patient> => {    
     return patientEntries;
   };
 
-const getNonSensitiveEntries = (): NonSensitivePatientEntry [] => {
+const getNonSensitiveEntries = (): PatientNonSensitive [] => {
     return patientEntries.map(({ id, name, dateOfBirth, gender, occupation }) => ({
       id,
       name,
@@ -16,9 +16,9 @@ const getNonSensitiveEntries = (): NonSensitivePatientEntry [] => {
     }));
   }; 
 
-const addPatient = ( entry: NewPatientEntry ): PatientEntry => {
+const addPatient = ( entry: NewPatientEntry ): Patient => {
     const newPatientEntry = {
-      id: Math.max(...patientEntries.map(p => p.id)) + 1,
+      id: (patientEntries.length + 1).toString(),
       ...entry
     };
   
@@ -27,7 +27,7 @@ const addPatient = ( entry: NewPatientEntry ): PatientEntry => {
 };
 
 
-const findById = (id: number): PatientEntry | undefined => {
+const findById = (id: string): Patient | undefined => {
     const entry = patientEntries.find(p => p.id === id);
     return entry;
   };
@@ -38,3 +38,5 @@ export default {
   getNonSensitiveEntries,
   findById
   };
+
+  
