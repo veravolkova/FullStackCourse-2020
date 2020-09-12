@@ -3,17 +3,70 @@ export enum Gender {
   Female = 'female', 
 }
 
-export interface DiagnoseEntry {
-    id: number;
-    date: string; 
-    name_eng: string;
-    name_lat?: string;
-    description: string;
-  } 
+export interface Diagnosis {    
+  code: string; 
+  name: string;
+  latin?: string;   
+} 
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Entry {
+export enum EntryType {
+  HealthCheck = 'HealthCheck',
+  OccupationalHealth = 'OccupationalHealthcare',
+  Hospital = 'Hospital'
 }
+
+export interface BaseEntry {
+  id: string;  
+  description: string;
+  date: string;
+  specialist: string;
+  diagnosisCodes?: Array<Diagnosis['code']>;
+  type: EntryType;
+}
+
+export enum HealthCheckRating {
+  'Healthy' = 0,
+  'LowRisk' = 1,
+  'HighRisk' = 2,
+  'CriticalRisk' = 3
+}
+
+interface HealthCheckEntry extends BaseEntry {
+  type: EntryType.HealthCheck;
+  healthCheckRating: HealthCheckRating;
+}
+
+export interface Discharge {
+  date: string;
+  criteria: string;
+}
+
+interface HospitalEntry extends BaseEntry {
+  type: EntryType.Hospital;
+  discharge: Discharge;
+}
+
+export interface SickLeave {
+  startDate: string;
+  endDate: string;
+}
+
+interface OccupationalHealthcareEntry extends BaseEntry {
+  type: EntryType.OccupationalHealth;
+  employerName: string;
+  sickLeave?: SickLeave;
+}
+
+export type Entry = 
+  | HospitalEntry
+  | OccupationalHealthcareEntry
+  | HealthCheckEntry;
+
+export type NewBaseEntry = Omit<BaseEntry, 'id'>;
+
+type UnionOmit<T, K> = T extends {} ? Pick<T, Exclude<keyof T, K>> : never;
+
+export type NewEntry = UnionOmit<Entry, 'id'>;
 
 export interface Patient {
   id: string;
@@ -21,23 +74,15 @@ export interface Patient {
   ssn: string;
   occupation: string;
   gender: Gender;
-  dateOfBirth: string;
-  entries: Entry[]
+  dateOfBirth: string;  
+  entries: Entry[]; 
 }
   
-/* export interface PatientEntry {
-    id: number;
-    ssn: string;
-    name: string; 
-    dateOfBirth: string;
-    gender: Gender;
-    occupation: string;    
-  }  */
-
-//export type NonSensitivePatientEntry = Omit<PatientEntry, 'ssn'>;
 export type PatientSensitive = Omit<Patient, 'id'>;
-export type PatientNonSensitive = Omit<Patient, 'ssn' | 'entries' >
-export type NewPatientEntry = Omit<Patient, 'id'>;
+export type PatientNonSensitive = Omit<Patient, 'ssn'>;
+export type NewPatientEntry = Omit<Patient, 'id' | 'entries'>;
+
+
 
 
 

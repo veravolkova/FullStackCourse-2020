@@ -7,8 +7,8 @@ router.get('/', (_req, res) => {
   res.send(diagnoseService.getEntries());
 });
 
-router.get('/:id', (req, res) => {
-  const diagnose = diagnoseService.findById(Number(req.params.id));
+router.get('/:code', (req, res) => {
+  const diagnose = diagnoseService.findByCode(req.params.code);
 
   if (diagnose) {
     res.send(diagnose);
@@ -18,7 +18,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (_req, res) => {
-  res.send('Saving a diagnose!');
+  res.send('Not implemented yet!');
 });
 
 export default router;

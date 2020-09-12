@@ -10,7 +10,7 @@ const User = require('./models/user')
 
 mongoose.set('useFindAndModify', false)
 
-MONGODB_URI = 'mongodb+srv://'
+MONGODB_URI='...'
 
 mongoose.set('useCreateIndex', true)
 

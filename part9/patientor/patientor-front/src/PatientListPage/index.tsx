@@ -1,48 +1,48 @@
-import React from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import { Container, Table, Button } from "semantic-ui-react";
+import React from 'react'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
+import { Container, Table, Button } from 'semantic-ui-react'
 
-import { PatientFormValues } from "../AddPatientModal/AddPatientForm";
-import AddPatientModal from "../AddPatientModal";
-import { Patient } from "../types";
-import { apiBaseUrl } from "../constants";
-import HealthRatingBar from "../components/HealthRatingBar";
-import { useStateValue } from "../state";
+import HealthRatingBar from '../components/HealthRatingBar'
 
-import { addPatient } from "../state/reducer";
+import { PatientFormValues } from '../AddPatientModal/AddPatientForm'
+import AddPatientModal from '../AddPatientModal'
+import { Patient } from '../types'
+import { apiBaseUrl } from '../constants'
+
+import { useStateValue } from '../state'
+import { addPatient } from '../state/reducer'
 
 const PatientListPage: React.FC = () => {
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ patients }, dispatch] = useStateValue()
 
-  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<string | undefined>();
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false)
+  const [error, setError] = React.useState<string | undefined>()
 
-  const openModal = (): void => setModalOpen(true);
+  const openModal = (): void => setModalOpen(true)
 
   const closeModal = (): void => {
-    setModalOpen(false);
-    setError(undefined);
-  };
+    setModalOpen(false)
+    setError(undefined)
+  }
 
   const submitNewPatient = async (values: PatientFormValues) => {
     try {
       const { data: newPatient } = await axios.post<Patient>(
         `${apiBaseUrl}/patients`,
         values
-      );
-      //dispatch({ type: "ADD_PATIENT", payload: newPatient });
-      dispatch(addPatient(newPatient));
-      closeModal();
+      )
+      dispatch(addPatient(newPatient))
+      closeModal()
     } catch (e) {
-      console.error(e.response.data);
-      setError(e.response.data.error);
+      console.error(e.response.data)
+      setError(e.response.data.error)
     }
-  };
+  }
 
   return (
-    <div className="App">
-      <Container textAlign="center">
+    <div className='App'>
+      <Container textAlign='center'>
         <h3>Patient list</h3>
       </Container>
       <Table celled>
@@ -57,7 +57,6 @@ const PatientListPage: React.FC = () => {
         <Table.Body>
           {Object.values(patients).map((patient: Patient) => (
             <Table.Row key={patient.id}>
-              {/* <Table.Cell>{patient.name}</Table.Cell> */}
               <Table.Cell>
                 <Link to={`/patients/${patient.id}`}>{patient.name}</Link>
               </Table.Cell>
@@ -78,7 +77,7 @@ const PatientListPage: React.FC = () => {
       />
       <Button onClick={() => openModal()}>Add New Patient</Button>
     </div>
-  );
-};
+  )
+}
 
-export default PatientListPage;
+export default PatientListPage

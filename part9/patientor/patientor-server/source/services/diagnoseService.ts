@@ -1,23 +1,19 @@
 import diagnoseEntries from '../../data/diagnoses';
 
-import { DiagnoseEntry } from '../types';
+import { Diagnosis } from '../types';
 
 
-const getEntries = (): Array<DiagnoseEntry> => {    
+const getEntries = (): Array<Diagnosis> => {    
     return diagnoseEntries;
   };
 
-const addEntry = () => {
-  return null;
-};
 
-const findById = (id: number): DiagnoseEntry | undefined => {
-  const entry = diagnoseEntries.find(d => d.id === id);
+const findByCode = (code: string): Diagnosis | undefined => {
+  const entry = diagnoseEntries.find(d => d.code === code);
   return entry;
 };
 
 export default {
-  getEntries,
-  addEntry,
-  findById
+  getEntries, 
+  findByCode
 };
