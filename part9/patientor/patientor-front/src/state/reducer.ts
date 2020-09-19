@@ -86,3 +86,4 @@ export const addPatient = (patient: Patient): Action => ({
   type: 'ADD_PATIENT', 
   payload: patient
 }) 
+

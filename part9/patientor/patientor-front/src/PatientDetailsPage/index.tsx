@@ -1,25 +1,101 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'  
 import axios from 'axios'
-import { Container, Icon } from 'semantic-ui-react'
+import { Button, Container, Icon } from 'semantic-ui-react'
 
-import { Patient } from '../types'
+import { EntryType, NewEntry, Patient } from '../types'
 import { apiBaseUrl } from '../constants'
 
 import { useStateValue } from '../state'
 import { setPatient } from '../state/reducer'
 
-//import AddEntryModal from '../AddEntryModal'
+import AddEntryModal from '../AddEntryModal'
 import EntryDetails from './EntryDetails'
+import ChooseEntryType, { EntryTypeValues } from '../AddEntryModal/ChooseEntryType'
 
 
 const PatientDetailsPage: React.FC = () => {
 
   const [{ patients }, dispatch] = useStateValue()
   const [error, setError] = React.useState<string | undefined>()
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false)
+  const [entryType, setEntryType] = useState<string>('')
+  const [visible, setVisible] = React.useState<boolean>(false)
+
+
+  const openModal = (): void => setModalOpen(true)
+
+  const closeModal = (): void => {
+    setModalOpen(false)
+    setError(undefined)
+    setVisible(false)
+  }
+
+  const initialValuesNoType = {
+    description: '',
+    date: '',
+    specialist: ''
+  }
+
+  const healthCheckInitialValues: NewEntry = {
+    ...initialValuesNoType,
+    type: EntryType.HealthCheck,
+    healthCheckRating: 0,
+  }
+
+  const occupationalHealthCareIntitialValues: NewEntry = {
+    ...initialValuesNoType,
+    type: EntryType.OccupationalHealth,
+    employerName: '',
+    sickLeave: { startDate: '', endDate: '' },
+  }
+
+  const hospitalIntitialValues: NewEntry = {
+    ...initialValuesNoType,
+    type: EntryType.Hospital,
+    discharge: { date: '', criteria: '' },
+  }
+
+  const initialValues = (entryType: string): NewEntry => {
+    switch (entryType) {
+      case 'healthcheck':
+        return healthCheckInitialValues
+      case 'occupational':
+        return occupationalHealthCareIntitialValues
+      case 'hospital':
+        return hospitalIntitialValues
+      default:
+        return healthCheckInitialValues
+    }
+  }
+
+  const handleSubmit = (values: EntryTypeValues) => {
+    try {
+      setEntryType(values.type)
+      setVisible(true)
+
+    } catch (e) {
+      console.error(e.response.data)
+      setError(e.response.data.error)
+    }
+  }
+
+  const submitNewEntry = async (values: NewEntry) => {    
+    try {
+      const { data: updatedPatient } = await axios.post<Patient>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+      )
+      dispatch(setPatient(updatedPatient))
+      closeModal()
+      setVisible(false)
+    } catch (e) {
+      console.error(e.response.data)
+      setError(e.response.data.error)
+    }
+  }
 
   const { id } = useParams<{ id: string }>()
-
   let patient = patients[id]
 
   React.useEffect(() => {
@@ -35,11 +111,6 @@ const PatientDetailsPage: React.FC = () => {
     }
     fetchPatient()
   }, [id, dispatch])
-
-  //to do
-  const submitNewEntry = () => {
-    console.log('submit new entry')
-  }
 
   const icon = () => {
     switch (patient.gender) {
@@ -64,15 +135,30 @@ const PatientDetailsPage: React.FC = () => {
         <h5>{patient.ssn} </h5>
         <h5>{patient.occupation}</h5>
         {patient.entries.map((entry) => (
-          <EntryDetails entry={entry} />
+          <EntryDetails key={entry.id} entry={entry} />
         ))}
-      </Container>
+        {!visible ?
+          (
+            <ChooseEntryType onSubmit={handleSubmit} />
+          ) : null
+        }
 
-      {/*   to do: 
-      <AddEntryForm    
-        onSubmit={submitNewEntry}
-        error={error}     
-      /> */}
+        {visible ?
+          (
+            <>
+              <AddEntryModal
+                modalOpen={modalOpen}
+                onSubmit={submitNewEntry}
+                error={error}
+                onClose={closeModal}
+                initialValues={initialValues(entryType)}
+              />
+              <Button onClick={() => openModal()}>Add New Entry</Button>
+            </>
+          ) : null
+        }
+
+      </Container>
     </div>
   )
 }

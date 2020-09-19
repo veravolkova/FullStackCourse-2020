@@ -88,7 +88,7 @@ export const DiagnosisSelection = ({
     data: DropdownProps
   ) => {
     setFieldTouched(field, true)
-    setFieldValue(field, data.value)
+    setFieldValue(field, data.value)    
   }
 
   const stateOptions = diagnoses.map(diagnosis => ({

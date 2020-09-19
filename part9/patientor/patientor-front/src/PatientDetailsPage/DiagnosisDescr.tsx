@@ -7,8 +7,7 @@ interface DiagnosisDescrProps {
   diagnosisCodes: Array<Diagnosis['code']>
 }
 const DiagnosisDescr: React.FC<DiagnosisDescrProps> = ({ diagnosisCodes }) => {
-  const [{ diagnoses }] = useStateValue()
-  console.log(diagnoses)
+  const [{ diagnoses }] = useStateValue()  
 
   return (
     <div>

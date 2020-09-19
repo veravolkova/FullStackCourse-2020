@@ -9,8 +9,8 @@ const isString = (text: any): text is string => {
 
 const isStringArray = (param: any[]): param is string[] => {
   return Array.isArray(param) && param.every(item => typeof item === 'string');
-};
- 
+};  
+
 const isDate = (date: string): boolean => {
     return Boolean(Date.parse(date));
   };
@@ -94,32 +94,30 @@ const parseEntryType = (entryType: any): EntryType => {
     return discharge;
   };  
   
-  const parseHealthCheckRating = (healthCheckRating: any): HealthCheckRating => {
-    if (!healthCheckRating || !isHealthCheckRating(HealthCheckRating)) {
+const parseHealthCheckRating = (healthCheckRating: any): HealthCheckRating => {
+    if (!isHealthCheckRating(healthCheckRating)) {
         throw new Error('Incorrect or missing health check rating field');
     } 
 
     return healthCheckRating;
-  };
- 
-  const parseDiagnosisCodes = (diagnosisCodes: any): Array<Diagnosis['code']> => {
-    if (isStringArray(diagnosisCodes)) {
+  }; 
+
+ const parseDiagnosisCodes = (diagnosisCodes: any): Array<Diagnosis['code']> => {
+    if (!isStringArray(diagnosisCodes)) {
       throw new Error('Incorrect or missing diagnoses');
-    }
-  
+    }  
     return diagnosisCodes;
-  };
+  };  
   
  const toNewBaseEntry = (object: any): NewBaseEntry => {
     return {
       type: parseEntryType(object.type),
       description: parseToString(object.description),
       date: parseDate(object.date),
-      specialist: parseToString(object.specialist),  
+      specialist: parseToString(object.specialist),       
       diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes)       
      };      
   };  
-
  
  export const toNewEntryWithTypes = (object: any): NewEntry => {  
 

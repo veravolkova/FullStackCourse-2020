@@ -9,7 +9,7 @@ import { NewEntry } from '../types'
 import AddEntryDetails from './AddEntryDetails'
 
 interface Props {
-  initialValues: NewEntry
+  initialValues: NewEntry  
   onSubmit: (values: NewEntry) => void
   onCancel: () => void  
 }
@@ -17,10 +17,10 @@ interface Props {
 const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel, initialValues }) => {
   const [{ diagnoses }] = useStateValue()
 
-
+  
   return (
     <Formik     
-      initialValues={initialValues}
+      initialValues={initialValues} 
       onSubmit={onSubmit}      
       validate={values => {
         const requiredError = 'Field is required'
@@ -33,19 +33,13 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel, initialValues }) =>
         }
         if (!values.specialist) {
           errors.specialist = requiredError
-        }       
-        if (!values.diagnosisCodes) {
-          errors.diagnosesCodes = requiredError
-        }
-        if (!values.type) {
-          errors.type = requiredError
-        }
+        }         
         return errors
       }}
     >
       {({ isValid, dirty, values, setFieldValue, setFieldTouched }) => {
         return (
-          <Form className='form ui'>
+          <Form className='form ui'>     
             <Field
               label='Description'
               placeholder='Description'
@@ -63,7 +57,7 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel, initialValues }) =>
               placeholder='Specialist'
               name='specialist'
               component={TextField}
-            />
+            />            
             <DiagnosisSelection
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}
@@ -89,7 +83,6 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel, initialValues }) =>
                 </Button>
               </Grid.Column>
             </Grid>
-
           </Form>
         )
       }}
