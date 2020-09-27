@@ -79,3 +79,12 @@ export const ME = gql`
     }
   }
 `
+
+export const FAVORITE_GENRE = gql`
+  query me {
+    me {
+      favoriteGenre
+    }
+  }
+`
+

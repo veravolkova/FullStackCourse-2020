@@ -32,6 +32,8 @@ const App = () => {
 
   const authors= useQuery(ALL_AUTHORS)
   const me = useQuery(ME)
+
+
   const updateCacheWith = (addedBook) => {
     const includedIn = (set, object) =>
       set.map(p => p.id).includes(object.id)
@@ -65,9 +67,9 @@ const App = () => {
 
   const logout = () => {
     setToken(null)
-    setPage('authors')
     localStorage.clear()
     client.resetStore()
+    setPage('authors')
   }
 
   const notify = (message) => {
@@ -121,11 +123,8 @@ const App = () => {
       />
 
       <Reccomend
-        setError={notify}
         show={page === 'reccomend'}
-        setErrorMessage={notify}
         setPage={setPage}
-        me={me}
         token={token}
       />
 

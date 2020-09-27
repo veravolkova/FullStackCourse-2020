@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useMutation } from '@apollo/client'
+import { useMutation, useApolloClient, } from '@apollo/client'
 import { LOGIN } from '../queries'
 
 import {
@@ -11,10 +11,13 @@ const LoginForm = ({ setErrorMessage, setToken, show, setPage }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  const client = useApolloClient()
+
 
   const [login, result] = useMutation(LOGIN, {
     onCompleted: () => {
       setPage('authors')
+      client.resetStore()
     },
     onError: (error) => {
       setErrorMessage(error.message)

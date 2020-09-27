@@ -1,29 +1,24 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Typography } from '@material-ui/core'
-import { useQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../queries'
+import { useQuery, useLazyQuery } from '@apollo/client'
+import { ALL_BOOKS, ME } from '../queries'
 
 const Reccomend = (props) => {
 
-  const [genre, setGenre] = useState(null)
-  const me = props.me
-
-  const books =
-    useQuery(ALL_BOOKS, {
-      variables: { genre: genre },
-    })
+  const { loading, data: favGenreData } = useQuery(ME)
+  const [getFavBooks, { loading: booksLoading, data: recBooksData },
+  ] = useLazyQuery(ALL_BOOKS)
 
   useEffect(() => {
-    if (books.data && me.data && props.token) {
-      setGenre(me.data.me.favoriteGenre)
+    if (favGenreData.me) {
+      getFavBooks({
+        variables: { genre: favGenreData.me.favoriteGenre },
+      })
+      console.log(favGenreData.me.favoriteGenre)
     }
-  }, [books.data, me])
+  }, [favGenreData, getFavBooks])
 
-  if (books.loading || me.loading) {
-    return <div>loading...</div>
-  }
-
-  if (!props.show) {
+  if (!props.show || loading) {
     return null
   }
 
@@ -41,8 +36,8 @@ const Reccomend = (props) => {
               published
             </th>
           </tr>
-          {
-            books.data.allBooks.map(a =>
+          {booksLoading ? null :
+            recBooksData.allBooks.map(a =>
               <tr key={a.title}>
                 <td>{a.title}</td>
                 <td>{a.author.name}</td>
