@@ -10,8 +10,8 @@
       "browser": true,
       "es6": true
     },
-    "rules": {
-      "@typescript-eslint/semi": ["error"],
+    "rules": {    
+      "@typescript-eslint/semi": ["off"],
       "@typescript-eslint/explicit-function-return-type": 0,
       "@typescript-eslint/no-unused-vars": [
           "error", { "argsIgnorePattern": "^_" }

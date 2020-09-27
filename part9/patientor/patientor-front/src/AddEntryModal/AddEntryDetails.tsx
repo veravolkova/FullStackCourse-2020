@@ -1,10 +1,10 @@
 import React from 'react'
 import { EntryType } from '../types'
-import { Field } from 'formik'
-
+import { Formik, Field, FormikErrors } from 'formik'
 import { TextField, NumberField } from '../AddPatientModal/FormField'
 
-const AddEntryDetails: React.FC<{ entryType: EntryType }> = ({ entryType }) => {
+const AddEntryDetails: React.FC<{ entryType: EntryType }> = ({ entryType }) => { 
+
 
   const assertNever = (value: never): never => {
     throw new Error(
@@ -13,7 +13,7 @@ const AddEntryDetails: React.FC<{ entryType: EntryType }> = ({ entryType }) => {
   }
 
   switch (entryType) {
-    case EntryType.HealthCheck:
+    case EntryType.HealthCheck:     
       return (
         <Field
           label='HealthCheckRating'
@@ -21,8 +21,8 @@ const AddEntryDetails: React.FC<{ entryType: EntryType }> = ({ entryType }) => {
           component={NumberField}
           min={0}
           max={3}
-        />
-      )
+        />        
+      )      
     case EntryType.OccupationalHealth:
       return (
         <>
@@ -31,7 +31,7 @@ const AddEntryDetails: React.FC<{ entryType: EntryType }> = ({ entryType }) => {
             placeholder='Employer Name'
             name='employerName'
             component={TextField}
-          />
+          />          
           <h4>Sick leave dates:</h4>
           <Field
             label='StartDate'

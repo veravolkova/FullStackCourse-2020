@@ -151,7 +151,7 @@ const PatientDetailsPage: React.FC = () => {
                 onSubmit={submitNewEntry}
                 error={error}
                 onClose={closeModal}
-                initialValues={initialValues(entryType)}
+                initialValues={initialValues(entryType)}                                
               />
               <Button onClick={() => openModal()}>Add New Entry</Button>
             </>

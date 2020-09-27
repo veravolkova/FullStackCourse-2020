@@ -6,7 +6,7 @@ interface Props {
   modalOpen: boolean
   onClose: () => void
   onSubmit: (values: PatientFormValues) => void
-  error?: string
+  error?: string  
 }
 
 const AddPatientModal = ({ modalOpen, onClose, onSubmit, error }: Props) => (
