@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import {
   Button,
-  ButtonGroup,
   TextField,
 } from '@material-ui/core'
 
@@ -32,7 +31,7 @@ const BlogForm = ({ createBlogEntry }) => {
     <div className="formDiv">
       <h4>Create a new entry</h4>
       <form onSubmit={addBlogEntry}>
-        <div>          
+        <div>
           <TextField
             label='title'
             type='text'
@@ -42,7 +41,7 @@ const BlogForm = ({ createBlogEntry }) => {
             onChange={handleInputChange}
           />
         </div>
-        <div>          
+        <div>
           <TextField
             label='author'
             type='text'
@@ -52,7 +51,7 @@ const BlogForm = ({ createBlogEntry }) => {
             onChange={handleInputChange}
           />
         </div>
-        <div>          
+        <div>
           <TextField
             label='url'
             type='text'

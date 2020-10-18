@@ -144,14 +144,12 @@ describe('viewing a specific blog entry', () => {
   })
 })
 
-//needs to be fixed
 describe('deletion of a blog entry', () => {
   test.skip('a blog entry can be deleted', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
     blogToDelete.user = auth.current_user_id
-    //console.log(blogToDelete)
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)

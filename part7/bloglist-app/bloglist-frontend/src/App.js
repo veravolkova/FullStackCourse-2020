@@ -1,180 +1,114 @@
 import React, { useState, useEffect } from 'react'
 import {
+  connect,
+  useDispatch,
+  useSelector,
+} from 'react-redux'
+
+import {
   Switch,
   Route,
-  useRouteMatch,
-  useHistory
+  useHistory,
 } from 'react-router-dom'
+
 import Blog from './components/Blog'
+import Blogs from './components/Blogs'
 import BlogForm from './components/BlogForm'
-import Button from './components/Button'
+import Footer from './components/Footer'
 import LoginForm from './components/LoginForm'
 import Menu from './components/Menu'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import Footer from './components/Footer'
+import User from './components/User'
+import Users from './components/Users'
+
 import blogService from './services/blogs'
-import loginService from './services/login'
+
 import {
-  ButtonGroup,
+  initializeBlogs,
+  createBlog,
+  removeBlog,
+  addLikes
+} from './reducers/blogReducer'
+
+import { login, logout } from './reducers/loginReducer'
+import { setNotification } from './reducers/notificationReducer'
+import { initializeUsers } from './reducers/userReducer'
+
+import {
   Container,
-  Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
   Typography,
-  Paper,
 } from '@material-ui/core'
 
-const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [message, setMessage] = useState(null)
-  const [messageType, setMessageType] = useState('')
+
+const App = (props) => {
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+
   const blogFormRef = React.createRef()
   const history = useHistory()
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.login)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [])
+    dispatch(initializeBlogs())
+    dispatch(initializeUsers())
+  }, [dispatch])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    const loggedUserJSON = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      blogService.setToken(loggedUserJSON.token)
     }
   }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+    if (user) {
+      blogService.setToken(user.token)
+    }
+  }, [user])
 
   const addBlogEntry = (blogObject) => {
     try {
       blogFormRef.current.toggleVisibility()
-      blogService
-        .create(blogObject)
-        .then(returnedBlog => {
-          setBlogs(blogs.concat(returnedBlog))
-        })
-      // history.push('/')
-      setMessage(`Entry ${blogObject.title} was creaated`)
-      setMessageType('success')      
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)     
+      dispatch(createBlog(blogObject))
+      props.setNotification(`Entry ${blogObject.title} was creaated`, 'success', 5)
     }
     catch (exception) {
-      setMessage('smth went wrong')
-      setMessageType('error')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
-  }
-
-  const handleLikesIncr = (blogObject) => {
-    try {
-      const blogId = blogObject.id
-      const blog = blogs.find(b => b.id === blogId)
-      const updateBlogEntry = {
-        title: blogObject.title,
-        author: blogObject.author,
-        url: blogObject.url,
-        user: blogObject.user.id,
-        likes: blogObject.likes + 1
-      }
-      blogService
-        .update(blogId, updateBlogEntry)
-        .then(returnedBlog => {
-          setBlogs(
-            blogs.map(b => (b.id !== blog.id ? b : returnedBlog))
-          )
-        })
-      setMessage(`Number of likes for entry ${blog.title} was updated`)
-      setMessageType('success')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
-    catch (exception) {
-      setMessage('smth went wrong')
-      setMessageType('error')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
-  }
-
-  const handleRemove = (blogObject) => {
-    if (window.confirm(`Delete ${blogObject.title}?`)) {
-      blogService
-        .remove(blogObject.id)
-        .then(() => {
-          const filteredBlogs = blogs.filter(b => b.id !== blogObject.id)
-          setBlogs(filteredBlogs)
-          setMessage(
-            `${blogObject.title} has been removed.`
-          )
-          setMessageType('success')
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
-        })
-        .catch(() => {
-          setMessageType('error')
-          setMessage(
-            `Entry '${blogObject.title}' can't be removed from server. Unauthorized`
-          )
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
-        })
+      console.error(exception)
+      props.setNotification('Smth went wrong', 'error', 5)
     }
   }
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username, password,
-      })
+    const loggedInUser = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
 
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
-
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      setMessage('wrong credentials')
-      setMessageType('error')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+    if (!loggedInUser) {
+      try {
+        const user = dispatch(login(username, password))
+        window.localStorage.setItem(
+          'loggedBlogappUser', JSON.stringify(user)
+        )
+        blogService.setToken(user.token)
+      } catch (exception) {
+        props.setNotification('Wrong credentials', 'error', 5)
+      }
     }
   }
 
- const handleLogout = async (event) => {
-    event.preventDefault()     
+  const handleLogout = async (event) => {
+    event.preventDefault()
     try {
       window.localStorage.removeItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
-      setUser(null)
+      props.logout()
       history.push('/login')
     } catch (exception) {
-      setMessage('log out error')
-      setMessageType('error')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      props.setNotification('Log out error', 'error', 5)
     }
   }
 
@@ -192,68 +126,81 @@ const App = () => {
 
   const blogForm = () => (
     <Togglable buttonLabel='new blog entry' ref={blogFormRef}>
-      <BlogForm createBlogEntry={addBlogEntry} />
-     </Togglable>
-  ) 
+      <BlogForm
+        createBlogEntry={addBlogEntry}
+      />
+    </Togglable>
+  )
 
   return (
     <Container>
-      <div>
-        <Notification message={message} type={messageType} />
-        <Menu user={user} handleLogout={handleLogout} /> 
-        <Switch>      
-          {user === null ?                 
+      <div style={{ paddingBottom:'80px' }}>
+        <Notification />
+        <Menu user={user} handleLogout={handleLogout} />
+        <Switch>
+          {user === null ?
             <Route path='/login'>
-            {loginForm()} 
-            </Route>   :   
-            <>     
+              {loginForm()}
+            </Route> :
+            <>
               <Typography variant='h3'>Blogs</Typography>
-               <Typography variant='h5'>{user.name} logged in</Typography>
-               {/* <Button handleClick={handleLogout} text='logout' />   */}
+              <Typography variant='h5'>{user.name} logged in</Typography>
 
-             <Route path='/logout'>             
-                {/* {handleClick={handleLogout}} */}
-             </Route>  
+              <Route path='/logout'>
+              </Route>
 
-             <Route path='/create'>             
-                 {blogForm()} 
-              </Route>  
-                
-              <Route path='/blogs'>
-                <div id='main'>
-                  <TableContainer component={Paper}>
-                    <Table>
-                      <TableBody>
-                        {blogs
-                          .sort((a, b) => a.likes < b.likes ? 1 : -1)
-                          .map(blog => (
-                            <TableRow key={blog.id}>
-                              {/* <TableCell>
-                                    <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-                                </TableCell> */}
-                              <TableCell>
-                                <Blog blog={blog} handleLikesIncr={handleLikesIncr} handleRemove={handleRemove} />
-                              </TableCell>
-                             {/*  <TableCell>
-                                  {blog.user}
-                              </TableCell> */}
-                            </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </div>
-              </Route>    
-                    
+              <Route path='/create'>
+                {blogForm()}
+              </Route>
+
+              <Route exact path='/blogs'>
+                <Blogs />
+              </Route>
+
+              <Route path="/blogs/:id" render={({ match }) =>
+                (
+                  <Blog blog={props.blogs.find(blog => blog.id === match.params.id)}
+                    blogVisible={true} />
+                )
+              }
+              />
+
+              <Route exact path='/users' render={() => <Users />} />
+              <Route path="/users/:id" render={() => <User />} />
+
             </>
           }
         </Switch>
-        <Footer />
       </div>
+      <Footer />
     </Container>
   )
 }
 
-export default App
+const mapStateToProps = (state) => {
+  return {
+    blogs: state.blogs,
+    users: state.users,
+  }
+}
+
+const mapDispatchToProps = {
+  setNotification,
+  initializeBlogs,
+  initializeUsers,
+  createBlog,
+  removeBlog,
+  addLikes,
+  login,
+  logout
+}
+
+const ConnectedApp = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
+
+export default ConnectedApp
+
 
 

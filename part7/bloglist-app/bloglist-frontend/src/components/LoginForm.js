@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
-  ButtonGroup,
   TextField,
 } from '@material-ui/core'
 
@@ -18,7 +17,7 @@ const LoginForm = ({
       <h2>Login</h2>
 
       <form onSubmit={handleSubmit}>
-        <div>         
+        <div>
           <TextField
             label='username'
             id='username'
@@ -26,7 +25,7 @@ const LoginForm = ({
             onChange={handleUsernameChange}
           />
         </div>
-        <div>         
+        <div>
           <TextField
             label='password'
             id='password'
